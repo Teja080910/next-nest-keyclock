@@ -1,12 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { useAuth } from "@/app/context/provider";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { useAuth } from "@/hooks/use-auth";
-import { LogOut, NotebookPen, User } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +12,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { logout } from "@/lib/keycloak"; // Adjust the import path as necessary
+import { cn } from "@/lib/utils";
+import { LogOut, NotebookPen, User } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const routes = [
   {
@@ -31,8 +32,8 @@ const routes = [
 
 export function Header() {
   const pathname = usePathname();
-  const { auth, login, logout } = useAuth();
-  const { isAuthenticated, user, isLoading } = auth;
+
+  const { user, isAuthenticated } = useAuth() as { user: any, isAuthenticated: boolean };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -43,9 +44,7 @@ export function Header() {
         </div>
         <nav className="flex items-center space-x-6 text-sm font-medium flex-1">
           {routes.map((route) => {
-            // Skip protected routes if not authenticated
-            if (route.protected && !isAuthenticated) return null;
-            
+
             return (
               <Link
                 key={route.path}
@@ -64,9 +63,9 @@ export function Header() {
         </nav>
         <div className="flex items-center space-x-4">
           <ThemeToggle />
-          {isLoading ? (
+          {!isAuthenticated ? (
             <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
-          ) : isAuthenticated ? (
+          ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="h-9 w-9 cursor-pointer">
@@ -91,7 +90,7 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button onClick={login}>Sign In</Button>
+            <Button onClick={() => (window.location.href = '/api/login')}>Sign In</Button>
           )}
         </div>
       </div>

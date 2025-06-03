@@ -1,11 +1,14 @@
-import { Header } from "@/components/layout/header";
+'use client';
+
 import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { FileText, Lock, UserCheck } from "lucide-react";
+import Link from "next/link";
 import './globals.css';
 
 export default function Home() {
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
