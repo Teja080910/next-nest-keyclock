@@ -16,4 +16,5 @@ export class AppController {
   getProtected(): string {
     return 'This endpoint is protected and requires authentication';
   }
+  
 }
