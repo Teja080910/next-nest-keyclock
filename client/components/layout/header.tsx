@@ -12,7 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logout } from "@/lib/keycloak"; // Adjust the import path as necessary
 import { cn } from "@/lib/utils";
 import { LogOut, NotebookPen, User } from "lucide-react";
 import Link from "next/link";
@@ -63,9 +62,7 @@ export function Header() {
         </nav>
         <div className="flex items-center space-x-4">
           <ThemeToggle />
-          {!isAuthenticated ? (
-            <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
-          ) : user ? (
+          {isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar className="h-9 w-9 cursor-pointer">
@@ -83,7 +80,7 @@ export function Header() {
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={logout}>
+                <DropdownMenuItem onClick={() => (window.location.href = '/api/logout')}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>

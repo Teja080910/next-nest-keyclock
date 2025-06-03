@@ -1,19 +1,19 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import Cookies from "js-cookie";
+import { Header } from "@/components/layout/header";
+import { ReactNode } from "react";
+import { useAuth } from "../context/provider";
 
 export default function AuthenticatedLayout({
   children,
 }: {
   children: ReactNode;
 }) {
- 
 
-  if (!user) {
+  const { user, isAuthenticated } = useAuth()
+
+  if (!isAuthenticated) {
     return null; // Will redirect in useEffect
   }
 
