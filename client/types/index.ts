@@ -20,6 +20,7 @@ export interface NoteFormData {
   title: string;
   content: string;
   category?: string;
+  userId?: string;
 }
 
 export interface AuthState {

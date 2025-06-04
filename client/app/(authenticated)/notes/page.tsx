@@ -10,6 +10,7 @@ import { NotesList } from "@/components/notes/notes-list";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/app/context/provider";
 
 export default function NotesPage() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -17,6 +18,8 @@ export default function NotesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
   const router = useRouter();
+  const { user } = useAuth();
+  console.log("User:", user);
 
   useEffect(() => {
     const fetchNotes = async () => {

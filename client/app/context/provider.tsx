@@ -3,27 +3,35 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
-export type TokenPayload = {
+export type UserPayload = {
+    id?: string;
+    username?: string;
     email?: string;
     firstName?: string;
     lastName?: string;
-    preferred_username?: string;
     exp?: number;
-    [key: string]: any;
 };
 
+export type TokenPayload = {
+    sub: string;
+    preferred_username: string;
+    email: string;
+    family_name?: string;
+    given_name?: string;
+}
+
 type AuthContextType = {
-    user: TokenPayload;
+    user: UserPayload;
     isAuthenticated: boolean;
 };
 
 const AuthContext = createContext<AuthContextType>({
-    user: {} as TokenPayload,
+    user: {} as UserPayload,
     isAuthenticated: false,
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<TokenPayload>({} as TokenPayload);
+    const [user, setUser] = useState<UserPayload>({} as UserPayload);
 
     useEffect(() => {
         const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
@@ -36,7 +44,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (token) {
             try {
                 const decoded: TokenPayload = jwtDecode(token);
-                setUser(decoded);
+                setUser({
+                    id: decoded.sub,
+                    username: decoded.preferred_username,
+                    email: decoded.email,
+                    firstName: decoded.family_name,
+                    lastName: decoded.given_name,
+                });
             } catch (err) {
                 console.error('Invalid token:', err);
             }

@@ -20,6 +20,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Note, NoteFormData } from "@/types";
 import { createNote, updateNote } from "@/lib/api";
+import { useAuth } from "@/app/context/provider";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required").max(100, "Title is too long"),
@@ -36,6 +37,7 @@ export function NoteForm({ initialData, mode }: NoteFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,6 +52,7 @@ export function NoteForm({ initialData, mode }: NoteFormProps) {
     setIsSubmitting(true);
     try {
       const noteData: NoteFormData = {
+        userId: user?.id,
         title: data.title,
         content: data.content,
         ...(data.category && { category: data.category }),

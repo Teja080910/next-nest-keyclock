@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getToken } from '@/lib/keycloak';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
@@ -31,6 +31,7 @@ export const getNote = async (id: string) => {
 };
 
 export const createNote = async (data: {
+  userId?: string;
   title: string;
   content: string;
   category?: string;
