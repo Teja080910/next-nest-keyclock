@@ -36,7 +36,7 @@ export function NoteCard({ note }: NoteCardProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-  const formattedDate = format(new Date(note.updatedAt), "MMM d, yyyy");
+  const formattedDate = format(new Date(note.createdAt), "MMM d, yyyy");
 
   const handleDelete = async () => {
     try {

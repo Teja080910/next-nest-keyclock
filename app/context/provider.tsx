@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
+import { set } from 'date-fns';
 
 export type UserPayload = {
     id?: string;
@@ -23,17 +24,21 @@ export type TokenPayload = {
 type AuthContextType = {
     user: UserPayload;
     isAuthenticated: boolean;
+    loading?: boolean;
 };
 
 const AuthContext = createContext<AuthContextType>({
     user: {} as UserPayload,
     isAuthenticated: false,
+    loading: false,
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<UserPayload>({} as UserPayload);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
+        setIsLoading(true);
         const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
             const [key, val] = cookie.split('=');
             acc[key] = decodeURIComponent(val);
@@ -51,14 +56,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     firstName: decoded.family_name,
                     lastName: decoded.given_name,
                 });
+                setIsLoading(false);
             } catch (err) {
                 console.error('Invalid token:', err);
+                setIsLoading(false);
             }
+        } else {
+            setIsLoading(false);
         }
     }, []);
 
+    if(isLoading){
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+                <div className="flex flex-col items-center gap-2">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+                    <p className="text-sm text-muted-foreground">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated: user.email ? true : false }}>
+        <AuthContext.Provider value={{ user, isAuthenticated: user.id ? true : false, loading: user.id ? false : true }}>
             {children}
         </AuthContext.Provider>
     );

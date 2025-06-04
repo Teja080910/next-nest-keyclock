@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { getNotes } from "@/lib/api";
-import { Note } from "@/types";
-import { NotesList } from "@/components/notes/notes-list";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/app/context/provider";
+import { NotesList } from "@/components/notes/notes-list";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { getNote } from "@/lib/api";
+import { Note } from "@/types";
+import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function NotesPage() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -19,13 +19,12 @@ export default function NotesPage() {
   const { toast } = useToast();
   const router = useRouter();
   const { user } = useAuth();
-  console.log("User:", user);
 
   useEffect(() => {
     const fetchNotes = async () => {
       try {
         setLoading(true);
-        const fetchedNotes = await getNotes();
+        const fetchedNotes = await getNote(user.id!);
         setNotes(fetchedNotes);
       } catch (error) {
         toast({

@@ -4,6 +4,9 @@ import crypto from 'crypto';
 
 export async function GET(req: NextRequest) {
   const state = crypto.randomBytes(16).toString('hex');
+  const url = new URL(req.url);
+  const redirect = url.searchParams.get('redirect') || '/';
+  const statePayload = JSON.stringify({ state, redirect });
 
   const keycloakBase = `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/auth`;
   const clientId = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID!;
@@ -15,7 +18,7 @@ export async function GET(req: NextRequest) {
   )}&response_type=code&scope=${encodeURIComponent(scope)}&state=${state}`;
 
   const response = NextResponse.redirect(loginUrl);
-  response.cookies.set('oauth_state', state, {
+  response.cookies.set('oauth_state', statePayload, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     path: '/',

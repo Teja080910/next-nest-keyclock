@@ -7,17 +7,18 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// Add a request interceptor
+// Add a request interceptor to attach the Bearer token
 api.interceptors.request.use(
   async (config) => {
-    // Get the token before the request is sent
-    const token = getToken();
-    if (token) {
+    const token = getToken(); 
+    if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
 export const getNotes = async () => {

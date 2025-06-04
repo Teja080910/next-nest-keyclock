@@ -5,22 +5,24 @@ import { useRouter } from "next/navigation";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { useAuth } from "../context/provider";
+import { getServerSideProps } from "next/dist/build/templates/pages";
 
 export default function AuthenticatedLayout({
   children,
 }: {
   children: ReactNode;
 }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth() as any;
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      window.location.href = "/api/login"; // Redirect to login endpoint
+    if (!isAuthenticated && loading) {
+      const currentUrl = encodeURIComponent(window.location.href);
+      window.location.href = `/api/login?redirect=${currentUrl}`;
     }
   }, [isAuthenticated, router]);
 
-  if (!isAuthenticated) {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-2">
