@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { getToken } from '@/lib/keycloak';
+import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -7,18 +7,19 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// Add a request interceptor
-api.interceptors.request.use(
-  async (config) => {
-    // Get the token before the request is sent
-    const token = getToken();
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+api.interceptors.request.use((config) => {
+  const cookies = document.cookie.split('; ').reduce((acc, cookie) => {
+    const [key, val] = cookie.split('=');
+    acc[key] = decodeURIComponent(val);
+    return acc;
+  }, {} as Record<string, string>);
+
+  const token = cookies['access_token'];
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const getNotes = async () => {
   const response = await api.get('/notes');

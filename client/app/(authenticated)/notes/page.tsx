@@ -19,7 +19,6 @@ export default function NotesPage() {
   const { toast } = useToast();
   const router = useRouter();
   const { user } = useAuth();
-  console.log("User:", user);
 
   useEffect(() => {
     const fetchNotes = async () => {

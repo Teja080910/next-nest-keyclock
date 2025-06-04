@@ -10,6 +10,7 @@ export type UserPayload = {
     firstName?: string;
     lastName?: string;
     exp?: number;
+    token?: string;
 };
 
 export type TokenPayload = {
@@ -17,6 +18,7 @@ export type TokenPayload = {
     preferred_username: string;
     email: string;
     family_name?: string;
+    exp?: number;
     given_name?: string;
 }
 
@@ -50,6 +52,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     email: decoded.email,
                     firstName: decoded.family_name,
                     lastName: decoded.given_name,
+                    token: token,
+                    exp: decoded.exp,
                 });
             } catch (err) {
                 console.error('Invalid token:', err);

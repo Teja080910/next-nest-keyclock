@@ -74,6 +74,7 @@ export function NoteForm({ initialData, mode }: NoteFormProps) {
 
       router.push("/notes");
     } catch (error) {
+      console.error("Error submitting form:", error);
       toast({
         title: "Error",
         description: 
