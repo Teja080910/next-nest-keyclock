@@ -1,8 +1,7 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
-import { set } from 'date-fns';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 export type UserPayload = {
     id?: string;
@@ -11,6 +10,7 @@ export type UserPayload = {
     firstName?: string;
     lastName?: string;
     exp?: number;
+    token?: string;
 };
 
 export type TokenPayload = {
@@ -55,6 +55,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                     email: decoded.email,
                     firstName: decoded.family_name,
                     lastName: decoded.given_name,
+                    token: token,
                 });
                 setIsLoading(false);
             } catch (err) {

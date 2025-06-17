@@ -1,11 +1,10 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
+import { useRouter } from "next/navigation";
+import { ReactNode, useEffect } from "react";
 import { useAuth } from "../context/provider";
-import { getServerSideProps } from "next/dist/build/templates/pages";
 
 export default function AuthenticatedLayout({
   children,
